@@ -1,39 +1,41 @@
 # SerpBase MCP
 
-把 [SerpBase](https://serpbase.dev) 的 Google Search、Images、News、Videos 和 Maps API 接入任何支持 MCP 的 AI Agent。
+[中文文档](README.zh-CN.md)
 
-适合这些场景：
+Connect the [SerpBase](https://serpbase.dev) Google Search, Images, News, Videos, and Maps APIs to any AI agent that supports MCP.
 
-- 给 Claude、Codex、Cursor、Cline/Roo、Continue 等 Agent 增加实时 Google 搜索能力
-- 给 RAG、市场调研、SEO、竞品监控、品牌监控做搜索 grounding
-- 查询 Google Images / News / Videos / Maps 并拿到结构化 JSON
+Use this server when you want to:
 
-## 功能
+- Give Claude, Codex, Cursor, Cline/Roo, Continue, or another MCP client real-time Google search.
+- Ground RAG, market research, SEO, competitor monitoring, or brand monitoring workflows with structured SERP data.
+- Query Google Images, News, Videos, Maps local search, and Maps place details as JSON.
 
-| MCP 工具 | 对应 SerpBase API | 用途 |
+## Features
+
+| MCP tool | SerpBase API | Use case |
 | --- | --- | --- |
-| `serpbase_search` | `/google/search` | Google Search 结果、自然链接、相关搜索、知识图谱等 SERP 模块 |
-| `serpbase_images` | `/google/images` | 图片 URL、缩略图、来源页面、域名 |
-| `serpbase_news` | `/google/news` | 新闻标题、来源、时间、摘要、缩略图 |
-| `serpbase_videos` | `/google/videos` | 视频链接、来源、时长、发布时间、缩略图 |
-| `serpbase_maps_search` | `/google/maps/search` | Google Maps 本地地点搜索 |
-| `serpbase_maps_detail` | `/google/maps/detail` | 通过 `feature_id` 获取单个地点详情 |
+| `serpbase_search` | `/google/search` | Google Search results, organic links, related searches, knowledge graph, and other SERP modules |
+| `serpbase_images` | `/google/images` | Image URLs, thumbnails, source pages, and domains |
+| `serpbase_news` | `/google/news` | News titles, publishers, time text, snippets, and thumbnails |
+| `serpbase_videos` | `/google/videos` | Video links, sources, durations, time text, and thumbnails |
+| `serpbase_maps_search` | `/google/maps/search` | Google Maps local place search |
+| `serpbase_maps_detail` | `/google/maps/detail` | Place detail lookup by `feature_id` |
 
-## 准备 API Key
+## Get an API key
 
-1. 打开 [SerpBase API Keys](https://serpbase.dev/dashboard/api-keys)
-2. 创建或复制一个 API key
-3. 配到 MCP 客户端环境变量里：
+1. Open [SerpBase API Keys](https://serpbase.dev/dashboard/api-keys).
+2. Create or copy an API key.
+3. Pass it to your MCP client as an environment variable:
 
 ```bash
 SERPBASE_API_KEY=your_serpbase_api_key
 ```
 
-不要把 API key 写进公开仓库。
+Do not commit API keys to public repositories.
 
-## 安装
+## Installation
 
-当前推荐从 GitHub 安装：
+Install from GitHub:
 
 ```bash
 git clone https://github.com/serpbase-dev/serpbase-mcp.git
@@ -55,18 +57,18 @@ Windows PowerShell:
 pip install -e .
 ```
 
-如果你只想直接跑，也可以不用激活虚拟环境：
+You can also run it as a Python module:
 
 ```bash
 python -m pip install -e .
 python -m serpbase_mcp
 ```
 
-## MCP 客户端配置
+## MCP configuration
 
-### 通用配置
+### Generic config
 
-如果 `serpbase-mcp` 命令在 PATH 里：
+If the `serpbase-mcp` command is available on PATH:
 
 ```json
 {
@@ -81,7 +83,7 @@ python -m serpbase_mcp
 }
 ```
 
-如果命令不在 PATH，使用模块启动更稳：
+If the command is not on PATH, run the module directly:
 
 ```json
 {
@@ -98,7 +100,7 @@ python -m serpbase_mcp
 }
 ```
 
-Windows 路径示例：
+Windows path example:
 
 ```json
 {
@@ -117,22 +119,22 @@ Windows 路径示例：
 
 ### Claude Desktop
 
-把上面的 `mcpServers` 加到 Claude Desktop 配置文件：
+Add the `mcpServers` block above to your Claude Desktop config:
 
 - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
-重启 Claude Desktop 后，工具列表里应能看到 `serpbase_*` 工具。
+Restart Claude Desktop. The `serpbase_*` tools should appear in the tool list.
 
 ### Cursor / Cline / Roo / Continue
 
-这些工具的 MCP 配置入口略有不同，但内容相同：添加一个名为 `serpbase` 的 stdio MCP server，`command` 指向 `serpbase-mcp` 或 `python -m serpbase_mcp`，并传入 `SERPBASE_API_KEY`。
+The UI differs by client, but the config is the same: add a stdio MCP server named `serpbase`, set `command` to `serpbase-mcp` or `python -m serpbase_mcp`, and pass `SERPBASE_API_KEY` in `env`.
 
-## 调用示例
+## Usage examples
 
-### 1. 普通 Google 搜索
+### Google Search
 
-让 Agent 调用 `serpbase_search`：
+Call `serpbase_search`:
 
 ```json
 {
@@ -143,15 +145,15 @@ Windows 路径示例：
 }
 ```
 
-适合提示词：
+Prompt example:
 
 ```text
 Use SerpBase to search for recent articles about Python asyncio and summarize the top results with links.
 ```
 
-### 2. 图片搜索
+### Google Images
 
-调用 `serpbase_images`：
+Call `serpbase_images`:
 
 ```json
 {
@@ -162,11 +164,11 @@ Use SerpBase to search for recent articles about Python asyncio and summarize th
 }
 ```
 
-返回里重点看 `images[].image_url`、`thumbnail_url`、`link`、`domain`。
+Important fields: `images[].image_url`, `thumbnail_url`, `link`, and `domain`.
 
-### 3. 新闻搜索
+### Google News
 
-调用 `serpbase_news`：
+Call `serpbase_news`:
 
 ```json
 {
@@ -177,11 +179,11 @@ Use SerpBase to search for recent articles about Python asyncio and summarize th
 }
 ```
 
-返回里重点看 `news[].title`、`source`、`time`、`published_at`、`snippet`、`link`。
+Important fields: `news[].title`, `source`, `time`, `published_at`, `snippet`, and `link`.
 
-### 4. 视频搜索
+### Google Videos
 
-调用 `serpbase_videos`：
+Call `serpbase_videos`:
 
 ```json
 {
@@ -192,11 +194,11 @@ Use SerpBase to search for recent articles about Python asyncio and summarize th
 }
 ```
 
-返回里重点看 `videos[].title`、`source`、`duration`、`time`、`link`。
+Important fields: `videos[].title`, `source`, `duration`, `time`, and `link`.
 
-### 5. Google Maps 本地搜索
+### Google Maps local search
 
-调用 `serpbase_maps_search`：
+Call `serpbase_maps_search`:
 
 ```json
 {
@@ -210,11 +212,11 @@ Use SerpBase to search for recent articles about Python asyncio and summarize th
 }
 ```
 
-`lat` 和 `lng` 必须一起传。返回里重点看 `places[].name`、`feature_id`、`rating`、`address`、`phone`、`website`、`google_maps_url`、`latitude`、`longitude`。
+`lat` and `lng` must be sent together. Important fields: `places[].name`, `feature_id`, `rating`, `address`, `phone`, `website`, `google_maps_url`, `latitude`, and `longitude`.
 
-### 6. Google Maps 地点详情
+### Google Maps place detail
 
-先从 `serpbase_maps_search` 结果中拿到 `feature_id`，再调用 `serpbase_maps_detail`：
+Get a `feature_id` from `serpbase_maps_search`, then call `serpbase_maps_detail`:
 
 ```json
 {
@@ -224,33 +226,33 @@ Use SerpBase to search for recent articles about Python asyncio and summarize th
 }
 ```
 
-## 环境变量
+## Environment variables
 
-| 变量 | 必填 | 默认值 | 说明 |
+| Variable | Required | Default | Description |
 | --- | --- | --- | --- |
-| `SERPBASE_API_KEY` | 是 | 无 | SerpBase API key |
-| `SERPBASE_BASE_URL` | 否 | `https://api.serpbase.dev` | 仅在测试或私有网关时需要改 |
-| `SERPBASE_TIMEOUT` | 否 | `30` | 请求超时秒数 |
-| `SERPBASE_SOURCE` | 否 | `serpbase-mcp` | 发送到 `X-SerpBase-Source` 的来源标记 |
+| `SERPBASE_API_KEY` | Yes | None | SerpBase API key |
+| `SERPBASE_BASE_URL` | No | `https://api.serpbase.dev` | Override only for testing or private gateways |
+| `SERPBASE_TIMEOUT` | No | `30` | Request timeout in seconds |
+| `SERPBASE_SOURCE` | No | `serpbase-mcp` | Value sent as `X-SerpBase-Source` |
 
-## 本地测试
+## Local tests
 
 ```bash
 pip install -e ".[dev]"
 python -m pytest
 ```
 
-也可以快速检查工具是否能导入：
+Quick import check:
 
 ```bash
 python -c "from serpbase_mcp.broker import _TOOLS; print([t.name for t in _TOOLS])"
 ```
 
-## 常见问题
+## Troubleshooting
 
-### 1. 客户端提示找不到 `serpbase-mcp`
+### The client cannot find `serpbase-mcp`
 
-说明 console script 不在 PATH。改用：
+Use module mode:
 
 ```json
 {
@@ -260,9 +262,9 @@ python -c "from serpbase_mcp.broker import _TOOLS; print([t.name for t in _TOOLS
 }
 ```
 
-### 2. 返回 `SERPBASE_API_KEY is not set`
+### `SERPBASE_API_KEY is not set`
 
-在 MCP 配置的 `env` 里添加：
+Add the key to your MCP server environment:
 
 ```json
 {
@@ -270,15 +272,15 @@ python -c "from serpbase_mcp.broker import _TOOLS; print([t.name for t in _TOOLS
 }
 ```
 
-配置后重启 MCP 客户端。
+Restart the MCP client after changing the config.
 
-### 3. 返回 `status: 1020`
+### `status: 1020`
 
-账号 credits 不足。去 SerpBase 控制台充值或换一个有余额的 API key。
+The account does not have enough credits. Add credits in the SerpBase dashboard or use another valid API key.
 
-### 4. Agent 没有引用链接
+### The agent answers without source links
 
-提示 Agent 使用结果里的 `link`、`url`、`display_url` 字段作为引用来源，并要求“答案中附上来源链接”。
+Ask the agent to cite the `link`, `url`, `display_url`, or `google_maps_url` fields returned by SerpBase.
 
 ## License
 
