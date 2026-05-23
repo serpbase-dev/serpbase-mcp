@@ -2,6 +2,8 @@
 
 [中文文档](README.zh-CN.md)
 
+Google SERP API MCP server for AI agents, search grounding, RAG, SEO tools, and local business data workflows.
+
 Connect the [SerpBase](https://serpbase.dev) Google Search, Images, News, Videos, and Maps APIs to any AI agent that supports MCP.
 
 Use this server when you want to:
