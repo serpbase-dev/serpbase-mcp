@@ -2,6 +2,8 @@
 
 [English](README.md)
 
+面向 AI Agent、搜索 grounding、RAG、SEO 工具和本地商家数据工作流的 Google SERP API MCP Server。
+
 把 [SerpBase](https://serpbase.dev) 的 Google Search、Images、News、Videos 和 Maps API 接入任何支持 MCP 的 AI Agent。
 
 适合这些场景：
